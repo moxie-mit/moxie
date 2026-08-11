@@ -1,0 +1,17 @@
+{
+  "name": "moxie",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
+    "dev:frontend": "pnpm --filter frontend run dev",
+    "dev:backend": "pnpm --filter backend run start:dev",
+    "build": "pnpm --filter frontend run build && pnpm --filter backend run build",
+    "lint": "pnpm --filter frontend run lint && pnpm --filter backend run lint",
+    "typecheck": "pnpm --filter frontend run typecheck && pnpm --filter backend run typecheck",
+    "test": "pnpm --filter backend run test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
