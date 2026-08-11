@@ -1,6 +1,6 @@
 # Backend (NestJS)
 
-This app lives in `/apps/backend` and uses NestJS + Mongoose (MongoDB) with Clerk-compatible JWT verification.
+This app lives in `/apps/backend` and uses NestJS + Mongoose (MongoDB) with `@clerk/express` for authentication.
 
 ## Required environment variables
 
@@ -9,9 +9,8 @@ Create `apps/backend/.env`:
 ```env
 PORT=3001
 MONGODB_URI=mongodb://localhost:27017/moxie
-CLERK_ISSUER=https://your-clerk-domain.clerk.accounts.dev
-CLERK_JWKS_URL=https://your-clerk-domain.clerk.accounts.dev/.well-known/jwks.json
-CLERK_AUDIENCE=
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ## Run locally
@@ -19,7 +18,7 @@ CLERK_AUDIENCE=
 From repository root:
 
 ```bash
-npm run dev:backend
+pnpm run dev:backend
 ```
 
 ## API examples
