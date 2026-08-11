@@ -1,5 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { getAuth } from '@clerk/express';
+import type { Request } from 'express';
 
 import { ClerkAuthGuard } from './auth/clerk-auth.guard';
 
@@ -12,7 +13,7 @@ export class AppController {
 
   @UseGuards(ClerkAuthGuard)
   @Get('auth/me')
-  me(@Req() request: Request & { auth?: unknown }) {
-    return { auth: request.auth };
+  me(@Req() request: Request) {
+    return { auth: getAuth(request) };
   }
 }
