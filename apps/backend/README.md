@@ -2,6 +2,12 @@
 
 This app lives in `/apps/backend` and uses NestJS + Mongoose (MongoDB) with `@clerk/express` for authentication.
 
+## Deployment
+
+Hosted on Render: https://moxie-rvh3.onrender.com
+
+Health check: https://moxie-rvh3.onrender.com/health
+
 ## Required environment variables
 
 Create `apps/backend/.env`:
