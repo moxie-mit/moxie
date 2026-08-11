@@ -1,0 +1,15 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Allow Clerk placeholder keys in env example files"
+condition = "AND"
+paths = [
+  '''(^|/)\.env\.example$''',
+  '''(^|/)apps/backend/\.env\.example$''',
+  '''(^|/)apps/frontend/\.env\.example$''',
+]
+regexes = [
+  '''pk_test_(your_key|x{32})''',
+  '''sk_test_(your_key|x{32})''',
+]
