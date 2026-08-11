@@ -15,12 +15,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={cn("h-full antialiased", "font-sans", inter.variable)}>
-        <body className="min-h-full flex flex-col">
+    <html lang="en" className={cn("h-full antialiased", "font-sans", inter.variable)}>
+      <body className="min-h-full flex flex-col">
+        <ClerkProvider>
           <TooltipProvider>{children}</TooltipProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
