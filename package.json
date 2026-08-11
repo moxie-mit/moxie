@@ -9,6 +9,7 @@
     "dev:backend": "pnpm --filter backend run start:dev",
     "build": "pnpm --filter frontend run build && pnpm --filter backend run build",
     "lint": "pnpm --filter frontend run lint && pnpm --filter backend run lint",
+    "format:check": "pnpm --filter frontend run format:check && pnpm --filter backend run format:check",
     "typecheck": "pnpm --filter frontend run typecheck && pnpm --filter backend run typecheck",
     "test": "pnpm --filter backend run test"
   },

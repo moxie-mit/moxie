@@ -1,11 +1,11 @@
-import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
+  const { userId } = await auth()
 
   if (!userId) {
-    redirect('/sign-in');
+    redirect("/sign-in")
   }
 
   return (
@@ -13,5 +13,5 @@ export default async function DashboardPage() {
       <h1 className="text-2xl font-semibold">Protected dashboard</h1>
       <p className="text-zinc-600">Signed in user id: {userId}</p>
     </main>
-  );
+  )
 }
