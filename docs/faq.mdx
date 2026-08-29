@@ -1,0 +1,45 @@
+---
+title: "Frequently Asked Questions (FAQ)"
+description: "Answers to common questions about Moxie documentation and codebase."
+---
+
+# Frequently Asked Questions (FAQ)
+
+### General Questions
+
+#### Q1: What is Moxie?
+Moxie is the official technology club of Muzaffarpur Institute of Technology (MIT), Muzaffarpur. This repository contains the website platform developed to manage workshops, hackathons, Techfest (Techmiti), participant records, and digital certificates.
+
+#### Q2: Can I push my code directly to `main`?
+**No**. The `main` branch is protected. All changes must be made in a separate branch and submitted via a Pull Request requiring at least 1 peer approval.
+
+---
+
+### Technical & Architecture Questions
+
+#### Q3: Why is the repository structured as a monorepo?
+We use `pnpm` workspaces (`apps/frontend` and `apps/backend`) to simplify dependency management, maintain consistent TypeScript configurations, and allow running full-stack development servers concurrently with `pnpm run dev`.
+
+#### Q4: Why are some features listed in Requirements not found in the code?
+The repository is currently in the **scaffold / initial infrastructure phase**. Features like QR code check-in, event registration, and certificate generation are planned in [`docs/Requirements.md`](file:///d:/PROJECTS/moxie/docs/Requirements.md) and will be implemented in upcoming issues.
+
+#### Q5: How is authentication handled between Next.js and NestJS?
+We use Clerk. The frontend uses `@clerk/nextjs` to manage user sign-in/up sessions and generate JWT session tokens. The NestJS backend uses `@clerk/express` inside a custom `ClerkAuthGuard` to validate incoming JWT Bearer tokens.
+
+#### Q6: How do I test Mintlify documentation changes locally?
+If you have the Mintlify CLI installed (`npm install -g mintlify`), run `mintlify dev` inside the `docs/` directory to spin up a local preview server on `http://localhost:3000`.
+
+---
+
+### Contribution Questions
+
+#### Q7: What branch name should I use?
+Follow the format `<type>/<short-description>`. For example: `docs/mintlify-setup`, `feature/events-page`, or `fix/mongo-uri`.
+
+#### Q8: What checks must pass before merging a PR?
+Every PR runs automated GitHub Actions checking:
+- Secret scanning (`gitleaks`)
+- `pnpm run lint`
+- `pnpm run format:check`
+- `pnpm run typecheck`
+- `pnpm run build`

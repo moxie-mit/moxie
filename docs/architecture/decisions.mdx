@@ -1,0 +1,64 @@
+---
+title: "Architecture Decisions & Project Status"
+description: "Key technical choices, current implementation status, and future roadmap."
+---
+
+# Architecture Decisions & Project Status
+
+This document records the architectural decisions made for the Moxie project and provides a clear breakdown of implemented vs planned features.
+
+---
+
+## Key Architecture Decisions
+
+### 1. Monorepo Architecture (`pnpm` Workspaces)
+- **Decision**: Use `pnpm` workspaces with packages contained in `apps/*`.
+- **Rationale**: Keeps frontend and backend code in a single repository, ensuring consistent TypeScript versions, unified linting/formatting rules, and streamlined CI/CD pipelines while maintaining clean separation of concerns.
+
+### 2. Frontend Framework (Next.js App Router)
+- **Decision**: Next.js 16 (App Router) with React 19 and TypeScript.
+- **Rationale**: Provides server-side rendering, optimized page loads, built-in routing (`src/app`), and seamless integration with `@clerk/nextjs`.
+
+### 3. Backend Framework (NestJS)
+- **Decision**: NestJS 11 with TypeScript.
+- **Rationale**: Provides an enterprise-grade modular architecture (Modules, Controllers, Services), dependency injection, built-in validation via `class-validator`, and standard middleware support (`@clerk/express`).
+
+### 4. Authentication Provider (Clerk)
+- **Decision**: Clerk for authentication and identity management across both Next.js and NestJS.
+- **Rationale**: Eliminates the risk of building custom password/auth management. `@clerk/nextjs` handles frontend login/signup UI, while `@clerk/express` provides token validation in NestJS `ClerkAuthGuard`.
+
+### 5. Database & ODM (MongoDB + Mongoose)
+- **Decision**: MongoDB with Mongoose object document mapper.
+- **Rationale**: Schema flexibility for complex event, attendance, and certificate data, seamless NestJS integration via `@nestjs/mongoose`, and cloud hosting flexibility.
+
+---
+
+## Implementation Status Breakdown
+
+To maintain documentation accuracy, the table below lists the **current state of software features**:
+
+| Component / Feature | Status | Notes |
+| :--- | :--- | :--- |
+| **Monorepo Setup** | ✅ Implemented | `pnpm-workspace.yaml`, workspace scripts configured |
+| **Frontend Framework** | ✅ Implemented | Next.js App Router, Tailwind CSS 4, shadcn/ui setup |
+| **Frontend Auth Routes** | ✅ Implemented | `/sign-in`, `/sign-up`, protected `/dashboard` |
+| **Backend API Server** | ✅ Implemented | NestJS App, Mongoose connection, global pipes/filters |
+| **Backend Auth Guard** | ✅ Implemented | `ClerkAuthGuard` validating bearer tokens |
+| **User Data Model** | ✅ Implemented | `User` schema (`clerkId`, `name`, `email`), `UsersController` |
+| **Health Check API** | ✅ Implemented | `GET /health` returning `{ status: 'ok' }` |
+| **Backend Hosting** | ✅ Implemented | Live on Render (`https://moxie-rvh3.onrender.com`) |
+| **CI/CD Pipeline** | ✅ Implemented | GitHub Actions (`.github/workflows/ci.yml`) |
+| **Event Registration** | ⏳ Planned | Specified in `docs/Requirements.md` |
+| **QR Code Venue Check-In** | ⏳ Planned | Specified in `docs/Requirements.md` |
+| **Certificate Generator & Verifier** | ⏳ Planned | Specified in `docs/Requirements.md` |
+| **Admin Dashboard & Analytics** | ⏳ Planned | Specified in `docs/Requirements.md` |
+| **Sponsor Impact Metrics** | ⏳ Planned | Specified in `docs/Requirements.md` |
+
+---
+
+## Architectural Rules for Contributors
+
+1. **Do Not Invent Architecture**: Do not introduce alternative state managers, CSS frameworks, or backend frameworks without team alignment.
+2. **Preserve Decoupling**: Keep frontend UI state in `apps/frontend` and backend business/database logic in `apps/backend`.
+3. **Strict Validation**: All incoming backend request DTOs must use `class-validator` annotations.
+4. **Environment Safety**: Never hardcode secret keys or database connection strings in source code.

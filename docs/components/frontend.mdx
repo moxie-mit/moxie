@@ -1,0 +1,90 @@
+---
+title: "Frontend (Next.js)"
+description: "Architecture, component layout, styling, and auth flow in apps/frontend."
+---
+
+# Frontend Application (`apps/frontend`)
+
+The frontend application lives in [`apps/frontend`](file:///d:/PROJECTS/moxie/apps/frontend) and is built with **Next.js (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS 4**, and **shadcn/ui** components.
+
+---
+
+## Directory Structure
+
+```text
+apps/frontend/
+├── public/                 # Static assets (favicons, images)
+├── src/
+│   ├── app/                # Next.js App Router routes & layouts
+│   │   ├── dashboard/      # Protected dashboard route
+│   │   ├── sign-in/        # Clerk SignIn route
+│   │   ├── sign-up/        # Clerk SignUp route
+│   │   ├── globals.css     # Tailwind CSS imports & theme definitions
+│   │   ├── layout.tsx      # Root application layout with ClerkProvider
+│   │   └── page.tsx        # Homepage component
+│   ├── components/         # Reusable UI components
+│   │   └── ui/             # shadcn/ui primitives (button, card, etc.)
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility functions (cn, formatters)
+│   └── proxy.ts            # Proxy configuration / API helpers
+├── .env.example            # Environment template file
+├── eslint.config.mjs       # ESLint configuration
+├── next.config.ts          # Next.js configuration
+├── package.json            # Frontend dependencies & scripts
+└── tsconfig.json           # TypeScript configuration
+```
+
+---
+
+## Key Technologies & Dependencies
+
+- **Framework**: `next@16.3.0` & `react@19.2.8`
+- **Authentication**: `@clerk/nextjs@7.7.3`
+- **Styling**: `tailwindcss@4`, `tw-animate-css`, `clsx`, `tailwind-merge`
+- **UI Primitives**: `@shadcn/react`, `@radix-ui/react-slot`, `lucide-react`, `class-variance-authority`
+- **Charts & UI**: `recharts`, `embla-carousel-react`, `react-day-picker`
+
+---
+
+## Environment Configuration
+
+Create `apps/frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+---
+
+## Auth Flow Implementation
+
+The frontend uses `@clerk/nextjs` for session management and user identity:
+
+1. **`src/app/layout.tsx`**: Wraps the entire application tree with `ClerkProvider`.
+2. **`src/app/sign-in/[[...sign-in]]/page.tsx`**: Renders the `<SignIn />` component from `@clerk/nextjs`.
+3. **`src/app/sign-up/[[...sign-up]]/page.tsx`**: Renders the `<SignUp />` component from `@clerk/nextjs`.
+4. **`src/app/dashboard/page.tsx`**: Protected page accessible only to authenticated users.
+
+---
+
+## Frontend Package Scripts
+
+Run these scripts from `apps/frontend` or from the monorepo root via `pnpm`:
+
+```bash
+# Start Next.js dev server (http://localhost:3000)
+pnpm --filter frontend run dev
+
+# Build production bundle
+pnpm --filter frontend run build
+
+# Run ESLint
+pnpm --filter frontend run lint
+
+# Check TypeScript types
+pnpm --filter frontend run typecheck
+
+# Format files with Prettier
+pnpm --filter frontend run format
+```

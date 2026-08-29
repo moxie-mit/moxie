@@ -1,0 +1,96 @@
+---
+title: "Database (MongoDB)"
+description: "MongoDB configuration, Mongoose connection, and User collection schema."
+---
+
+# Database Architecture (`MongoDB`)
+
+Moxie uses **MongoDB** as its primary document database, integrated into the NestJS backend via **`@nestjs/mongoose`** and **`mongoose`** (v9.9.2).
+
+---
+
+## Connection Configuration
+
+The database connection is established in `apps/backend/src/app.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+
+@Module({
+  imports: [
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/moxie',
+    ),
+    UsersModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+- **Local Default**: `mongodb://localhost:27017/moxie`
+- **Environment Variable**: `MONGODB_URI`
+
+---
+
+## Implemented Schemas
+
+### `User` Collection (`src/users/schemas/user.schema.ts`)
+
+The `User` document stores synchronized account information associated with a Clerk identity.
+
+```typescript
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+
+export type UserDocument = HydratedDocument<User>;
+
+@Schema({ timestamps: true })
+export class User {
+  @Prop({ required: true, unique: true })
+  clerkId: string;
+
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true, unique: true })
+  email: string;
+}
+
+export const UserSchema = SchemaFactory.createForClass(User);
+```
+
+#### Fields Breakdown
+
+| Field | Type | Modifiers | Description |
+| :--- | :--- | :--- | :--- |
+| `_id` | `ObjectId` | Auto-generated | MongoDB document identifier |
+| `clerkId` | `String` | `required`, `unique` | External user ID assigned by Clerk auth |
+| `name` | `String` | `required` | Full user display name |
+| `email` | `String` | `required`, `unique` | User email address |
+| `createdAt` | `Date` | Auto (`timestamps: true`) | Document creation timestamp |
+| `updatedAt` | `Date` | Auto (`timestamps: true`) | Document last update timestamp |
+
+---
+
+## Planned Database Schemas (Future Development)
+
+As outlined in [`docs/Requirements.md`](file:///d:/PROJECTS/moxie/docs/Requirements.md), future schemas will include:
+
+- **`Event` Collection**: Stores title, description, dates, location, capacity, registration status, and resources.
+- **`Registration` Collection**: Maps participants to events with unique QR codes, check-in status, and timestamps.
+- **`Certificate` Collection**: Stores certificate identifiers, issue dates, event references, and verification hashes.
+- **`Project` / `Achievement` Collection**: Public club projects and award records.
+
+---
+
+## Guidelines for Adding Schemas
+
+1. **Place Schemas in Feature Modules**: Always place schema files in `src/<feature>/schemas/<name>.schema.ts`.
+2. **Enable Timestamps**: Include `@Schema({ timestamps: true })` on all Mongoose class definitions.
+3. **Register in Feature Module**: Register the schema in the feature module using `MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])`.

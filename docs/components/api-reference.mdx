@@ -1,0 +1,161 @@
+---
+title: "API Reference"
+description: "REST API endpoints, authentication requirements, schemas, and example payloads."
+---
+
+# API Reference
+
+This page documents the REST API endpoints implemented in the NestJS backend application (`apps/backend`).
+
+> **Base URL (Local)**: `http://localhost:3001`
+> **Base URL (Production)**: `https://moxie-rvh3.onrender.com`
+
+---
+
+## Overview of Implemented Endpoints
+
+| Method | Path | Auth Required | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/health` | No | Public application health check |
+| `GET` | `/auth/me` | Yes (`Bearer <token>`) | Inspect currently authenticated Clerk token details |
+| `GET` | `/users` | Yes (`Bearer <token>`) | Retrieve list of registered User documents |
+| `POST` | `/users` | Yes (`Bearer <token>`) | Create a new User record in MongoDB |
+
+---
+
+## 1. Health Check
+
+### `GET /health`
+
+Public endpoint to check backend service availability.
+
+#### Request Header
+None required.
+
+#### Example Response (`200 OK`)
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
+## 2. Inspect Authentication State
+
+### `GET /auth/me`
+
+Protected endpoint returning token metadata parsed by `@clerk/express`.
+
+#### Request Header
+```http
+Authorization: Bearer <clerk_session_jwt>
+```
+
+#### Example Response (`200 OK`)
+```json
+{
+  "auth": {
+    "userId": "user_2sX9...",
+    "sessionId": "sess_2sX9...",
+    "claims": { ... }
+  }
+}
+```
+
+#### Error Response (`401 Unauthorized`)
+```json
+{
+  "statusCode": 401,
+  "timestamp": "2026-08-24T02:50:00.000Z",
+  "path": "/auth/me",
+  "message": "Missing or invalid authentication token"
+}
+```
+
+---
+
+## 3. List Users
+
+### `GET /users`
+
+Protected endpoint retrieving all User records from MongoDB.
+
+#### Request Header
+```http
+Authorization: Bearer <clerk_session_jwt>
+```
+
+#### Example Response (`200 OK`)
+```json
+[
+  {
+    "_id": "66ce9384910245a1b32d18f2",
+    "clerkId": "user_2sX9...",
+    "name": "Hasan Raiyan",
+    "email": "hasan@example.com",
+    "createdAt": "2026-08-24T02:50:00.000Z",
+    "updatedAt": "2026-08-24T02:50:00.000Z",
+    "__v": 0
+  }
+]
+```
+
+---
+
+## 4. Create User
+
+### `POST /users`
+
+Protected endpoint creating a new User record in MongoDB.
+
+#### Request Header
+```http
+Authorization: Bearer <clerk_session_jwt>
+Content-Type: application/json
+```
+
+#### Request Body (`CreateUserDto`)
+```json
+{
+  "clerkId": "user_2sX9...",
+  "name": "Hasan Raiyan",
+  "email": "hasan@example.com"
+}
+```
+
+#### Validation Rules (`CreateUserDto`)
+- `clerkId`: String, required
+- `name`: String, required
+- `email`: String, valid email format, required
+
+#### Example Response (`201 Created`)
+```json
+{
+  "_id": "66ce9384910245a1b32d18f2",
+  "clerkId": "user_2sX9...",
+  "name": "Hasan Raiyan",
+  "email": "hasan@example.com",
+  "createdAt": "2026-08-24T02:50:00.000Z",
+  "updatedAt": "2026-08-24T02:50:00.000Z",
+  "__v": 0
+}
+```
+
+---
+
+## Global Error Format
+
+All error responses are normalized by `HttpExceptionFilter`:
+
+```json
+{
+  "statusCode": 400,
+  "timestamp": "2026-08-24T02:50:00.000Z",
+  "path": "/users",
+  "message": [
+    "email must be an email",
+    "name should not be empty"
+  ]
+}
+```

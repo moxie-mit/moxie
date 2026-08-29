@@ -1,0 +1,161 @@
+---
+title: "Development Setup"
+description: "Step-by-step instructions to set up and run the Moxie repository locally."
+---
+
+# Development Setup
+
+This guide provides step-by-step instructions to set up your local development environment and run the Moxie monorepo.
+
+---
+
+## System Prerequisites
+
+Ensure you have installed the required software before proceeding:
+
+| Dependency | Required Version | Download / Installation |
+| :--- | :--- | :--- |
+| **Node.js** | `20.x` or higher (`v22` recommended) | [nodejs.org](https://nodejs.org/) |
+| **pnpm** | `10.x` or higher | [pnpm.io](https://pnpm.io/installation) (`npm install -g pnpm`) |
+| **MongoDB** | Community Server or MongoDB Atlas | [mongodb.com](https://www.mongodb.com/try/download/community) |
+| **Git** | `2.x` or higher | [git-scm.com](https://git-scm.com/) |
+
+---
+
+## 1. Clone the Repository
+
+Clone the repository to your local machine and switch to the project directory:
+
+```bash
+git clone https://github.com/your-org/moxie.git
+cd moxie
+```
+
+---
+
+## 2. Install Workspace Dependencies
+
+Install dependencies for all monorepo packages using `pnpm`:
+
+```bash
+pnpm install
+```
+
+---
+
+## 3. Configure Environment Variables
+
+The repository uses environment files for root configuration, frontend authentication, and backend database/auth configuration.
+
+Copy the example environment files:
+
+```bash
+# Root defaults
+cp .env.example .env
+
+# Frontend environment
+cp apps/frontend/.env.example apps/frontend/.env.local
+
+# Backend environment
+cp apps/backend/.env.example apps/backend/.env
+```
+
+### Environment Variable Files Overview
+
+#### Root `.env`
+```env
+NODE_ENV=development
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_key
+CLERK_SECRET_KEY=sk_test_your_key
+PORT=3001
+MONGODB_URI=mongodb://localhost:27017/moxie
+CLERK_ISSUER=https://your-clerk-domain.clerk.accounts.dev
+CLERK_JWKS_URL=https://your-clerk-domain.clerk.accounts.dev/.well-known/jwks.json
+CLERK_AUDIENCE=
+```
+
+#### Frontend `apps/frontend/.env.local`
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+#### Backend `apps/backend/.env`
+```env
+PORT=3001
+MONGODB_URI=mongodb://localhost:27017/moxie
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+---
+
+## 4. Ensure Database is Running
+
+If using a local MongoDB instance, start the MongoDB service:
+
+```bash
+# Linux / macOS (systemd / brew)
+sudo systemctl start mongod
+
+# Windows (Command Prompt / PowerShell)
+net start MongoDB
+```
+
+Alternatively, set `MONGODB_URI` in `apps/backend/.env` to your MongoDB Atlas connection string.
+
+---
+
+## 5. Run Development Servers
+
+Run both the frontend and backend applications concurrently from the root directory:
+
+```bash
+pnpm run dev
+```
+
+Or run applications individually:
+
+```bash
+# Frontend only (Next.js on http://localhost:3000)
+pnpm run dev:frontend
+
+# Backend only (NestJS on http://localhost:3001)
+pnpm run dev:backend
+```
+
+---
+
+## 6. Verify Local Installation
+
+- **Frontend**: Open `http://localhost:3000` in your browser.
+- **Backend Health Check**: Open `http://localhost:3001/health` in your browser or run:
+  ```bash
+  curl http://localhost:3001/health
+  # Response: {"status":"ok"}
+  ```
+
+---
+
+## 7. Run Quality Checks
+
+Before submitting code, ensure all workspace checks pass:
+
+```bash
+# Run ESLint across frontend and backend
+pnpm run lint
+
+# Check TypeScript types
+pnpm run typecheck
+
+# Check Prettier formatting
+pnpm run format:check
+
+# Run backend unit tests
+pnpm run test
+
+# Verify production build
+pnpm run build
+```
+
+Next, read [Repository Architecture](/architecture/overview) to understand the project structure.

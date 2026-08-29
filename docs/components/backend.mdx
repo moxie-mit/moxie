@@ -1,0 +1,116 @@
+---
+title: "Backend (NestJS)"
+description: "Architecture, modules, guards, services, and deployment in apps/backend."
+---
+
+# Backend Application (`apps/backend`)
+
+The backend application lives in [`apps/backend`](file:///d:/PROJECTS/moxie/apps/backend) and is built using **NestJS 11**, **TypeScript**, **Mongoose (MongoDB)**, and **`@clerk/express`**.
+
+---
+
+## Live Deployment Details
+
+- **Host**: Render
+- **Live Base URL**: `https://moxie-rvh3.onrender.com`
+- **Health Check Endpoint**: `https://moxie-rvh3.onrender.com/health`
+
+---
+
+## Directory Structure
+
+```text
+apps/backend/
+├── src/
+│   ├── auth/
+│   │   └── clerk-auth.guard.ts     # Guard validating Clerk JWT bearer tokens
+│   ├── common/
+│   │   └── http-exception.filter.ts # Global normalized error exception filter
+│   ├── users/
+│   │   ├── dto/
+│   │   │   └── create-user.dto.ts  # DTO validation schema for creating users
+│   │   ├── schemas/
+│   │   │   └── user.schema.ts      # Mongoose User document schema
+│   │   ├── users.controller.ts     # User endpoints (GET /users, POST /users)
+│   │   ├── users.module.ts         # User feature module declaration
+│   │   └── users.service.ts        # Database interaction & logic service
+│   ├── app.controller.ts           # Root controller (GET /health, GET /auth/me)
+│   ├── app.module.ts               # Root module loading Mongoose & Users module
+│   ├── app.service.ts              # Root app service
+│   └── main.ts                     # NestJS application bootstrap entry point
+├── test/                           # E2E & unit test suites
+├── .env.example                    # Backend environment defaults
+├── nest-cli.json                   # NestJS CLI configuration
+├── package.json                    # Backend dependencies & scripts
+└── tsconfig.json                   # TypeScript configuration
+```
+
+---
+
+## Bootstrap & Pipeline Configuration (`src/main.ts`)
+
+```typescript
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/http-exception.filter';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Enable global validation pipe for DTO inputs
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
+
+  // Enable global exception filter for normalized JSON errors
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  const port = process.env.PORT ?? 3001;
+  await app.listen(port);
+}
+bootstrap();
+```
+
+---
+
+## Key Modules & Components
+
+1. **`AppModule`**: Connects Mongoose using `process.env.MONGODB_URI` and imports `UsersModule`.
+2. **`ClerkAuthGuard`**: Implements NestJS `CanActivate`, retrieving request auth status via `getAuth(request)`. Throws `UnauthorizedException` if `userId` is missing.
+3. **`HttpExceptionFilter`**: Intercepts unhandled HTTP exceptions and formats uniform error JSON objects:
+   ```json
+   {
+     "statusCode": 401,
+     "timestamp": "2026-08-24T02:50:00.000Z",
+     "path": "/auth/me",
+     "message": "Missing or invalid authentication token"
+   }
+   ```
+
+---
+
+## Backend Package Scripts
+
+```bash
+# Run NestJS in development watch mode (http://localhost:3001)
+pnpm --filter backend run start:dev
+
+# Build production bundle to dist/
+pnpm --filter backend run build
+
+# Start compiled production server
+pnpm --filter backend run start:prod
+
+# Run ESLint
+pnpm --filter backend run lint
+
+# Run Jest unit tests
+pnpm --filter backend run test
+
+# Check TypeScript types
+pnpm --filter backend run typecheck
+```
