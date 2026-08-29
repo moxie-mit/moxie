@@ -1,0 +1,83 @@
+---
+title: "Troubleshooting Guide"
+description: "Resolving common setup, database, authentication, and build issues."
+---
+
+# Troubleshooting Guide
+
+This guide covers solutions to common issues encountered when setting up, developing, or running the Moxie codebase.
+
+---
+
+## 1. Monorepo & Installation Issues
+
+### Issue: `pnpm` command not found
+**Symptom**: Terminal throws `'pnpm' is not recognized as an internal or external command`.
+**Solution**: Install `pnpm` globally using npm:
+```bash
+npm install -g pnpm@latest
+```
+
+### Issue: `pnpm install` fails due to workspace lock mismatch
+**Symptom**: Errors stating lockfile is out of sync.
+**Solution**: Clean root `node_modules` and reinstall:
+```bash
+pnpm store prune
+pnpm install
+```
+
+---
+
+## 2. Database (MongoDB) Issues
+
+### Issue: Backend fails to connect to MongoDB (`ECONNREFUSED 127.0.0.1:27017`)
+**Symptom**: NestJS backend crashes on startup with Mongoose connection timeout.
+**Solution**:
+1. Check if local MongoDB server is active:
+   ```bash
+   # Windows
+   net start MongoDB
+
+   # Linux / macOS
+   sudo systemctl status mongod
+   ```
+2. Verify `MONGODB_URI` in `apps/backend/.env`. If using Docker or MongoDB Atlas, ensure the connection URI includes valid credentials and database name:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/moxie
+   ```
+
+---
+
+## 3. Authentication (Clerk) Issues
+
+### Issue: `UnauthorizedException` (401) on backend protected routes
+**Symptom**: `GET /auth/me` or `GET /users` returns `{"statusCode":401,"message":"Missing or invalid authentication token"}`.
+**Solution**:
+1. Ensure `Authorization` header is passed in HTTP request format:
+   ```http
+   Authorization: Bearer <clerk_session_jwt_token>
+   ```
+2. Verify `CLERK_SECRET_KEY` in `apps/backend/.env` matches your Clerk application dashboard.
+
+### Issue: Frontend Clerk widget fails to load
+**Symptom**: Blank screen or console error stating publishable key missing.
+**Solution**: Verify `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is present in `apps/frontend/.env.local` and starts with `pk_test_` or `pk_live_`.
+
+---
+
+## 4. Build & Typecheck Issues
+
+### Issue: `tsc --noEmit` fails on Next.js auto-generated files
+**Symptom**: Type check errors in `.next/types`.
+**Solution**: Run a fresh frontend build to regenerate Next.js type definitions:
+```bash
+pnpm --filter frontend run build
+```
+
+---
+
+## Still Stuck?
+
+If your issue is not listed above:
+1. Search active and closed [GitHub Issues](https://github.com/your-org/moxie/issues).
+2. Comment on your working issue with the full error stack trace.

@@ -1,0 +1,64 @@
+---
+title: "Project Overview"
+description: "High-level introduction to the Moxie technical club website monorepo."
+---
+
+# Project Overview
+
+Welcome to the **Moxie** repository. Moxie is the official technology club of **Muzaffarpur Institute of Technology (MIT), Muzaffarpur**.
+
+This monorepo houses the web application engineered to give Moxie a centralized digital platform to manage workshops, hackathons, Techfest (Techmiti), participant records, verifiable credentials, and public club showcases.
+
+---
+
+## Purpose & Scope
+
+The website addresses several key operational challenges for the club:
+
+1. **Central Portfolio**: Providing a permanent showcase of club achievements, active projects, team members, and upcoming events for students, sponsors, and faculty.
+2. **Automated Event Operations**: Replacing manual Google Forms, paper attendance, and Canva certificate creation with an end-to-end event lifecycle system.
+3. **Verifiable Certificates**: Enabling automated generation and online verification of participant certificates.
+4. **Participant History**: Retaining searchable participant data across semesters to track student engagement and demonstrate club reach to sponsors.
+
+---
+
+## Current Development Stage
+
+> [!NOTE]
+> The codebase is currently in the **initial workspace scaffold** stage. Core infrastructure including monorepo tooling, Clerk authentication guards, NestJS database integration, and basic User endpoints are operational.
+
+### Implemented Infrastructure
+- **Monorepo**: pnpm workspaces (`apps/frontend`, `apps/backend`).
+- **Frontend**: Next.js App Router scaffold with Tailwind CSS, shadcn/ui components, and Clerk Auth integration (`/sign-in`, `/sign-up`, protected `/dashboard`).
+- **Backend**: NestJS application with Mongoose MongoDB connection, `@clerk/express` auth guard (`ClerkAuthGuard`), global validation pipe, exception filter, and Render deployment setup.
+- **Data Model**: `User` schema (`clerkId`, `name`, `email`).
+
+### Planned Features (Specified in Requirements)
+- Event announcement & online registration flow.
+- QR code ticket generation & venue check-in scanner.
+- Automated certificate generation & public verification portal.
+- Admin management dashboards & participant database search.
+- Sponsor impact metrics & club project portfolio.
+
+---
+
+## Technology Stack Overview
+
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Monorepo Manager** | pnpm | Workspace dependency & script orchestration |
+| **Frontend Framework** | Next.js (16.3) | App Router web application & rendering |
+| **UI Library** | React (19.2) | Component-driven UI development |
+| **Language** | TypeScript (5) | Type safety across frontend & backend |
+| **Styling** | Tailwind CSS (4) + shadcn/ui | Utility-first styling & primitive UI components |
+| **Backend Framework** | NestJS (11) | Enterprise REST API server & business logic |
+| **Database** | MongoDB + Mongoose (9.9) | Document database & object modeling |
+| **Authentication** | Clerk | Multi-tenant auth for Next.js & NestJS |
+
+---
+
+## Next Steps
+
+- Explore [Getting Started](/getting-started) to begin your onboarding journey.
+- Review [Development Setup](/development-setup) to run the project locally.
+- Read [Repository Architecture](/architecture/overview) for system design details.

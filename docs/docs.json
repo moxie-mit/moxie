@@ -1,0 +1,55 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Moxie Documentation",
+  "theme": "mint",
+  "colors": {
+    "primary": "#0f172a",
+    "light": "#3b82f6",
+    "dark": "#1e293b"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "overview",
+          "getting-started",
+          "development-setup"
+        ]
+      },
+      {
+        "group": "Architecture & Requirements",
+        "pages": [
+          "architecture/overview",
+          "architecture/decisions",
+          "requirements"
+        ]
+      },
+      {
+        "group": "Technical Components",
+        "pages": [
+          "components/frontend",
+          "components/backend",
+          "components/database",
+          "components/authentication",
+          "components/api-reference"
+        ]
+      },
+      {
+        "group": "Development & Contribution",
+        "pages": [
+          "workflow",
+          "contributing",
+          "ai-tools"
+        ]
+      },
+      {
+        "group": "Support & FAQ",
+        "pages": [
+          "troubleshooting",
+          "faq"
+        ]
+      }
+    ]
+  }
+}

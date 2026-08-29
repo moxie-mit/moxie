@@ -46,5 +46,6 @@ pnpm run build
 - Root defaults: `/.env.example`
 - Frontend auth envs: `/apps/frontend/.env.example`
 - Backend DB/auth envs: `/apps/backend/.env.example`
+- Mintlify documentation system: `/docs/docs.json` and `/docs/`
 - Frontend docs: `/apps/frontend/README.md`
 - Backend docs: `/apps/backend/README.md`
