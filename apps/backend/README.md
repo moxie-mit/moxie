@@ -17,6 +17,7 @@ PORT=3001
 MONGODB_URI=mongodb://localhost:27017/moxie
 CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CORS_ORIGINS=http://localhost:3000
 ```
 
 ## Run locally
